@@ -20,9 +20,6 @@ importers:
         specifier: 5.2.1
         version: 5.2.1(patch_hash=e2a8e70254391e08e5c1a6066eeb1a808e93b5cbfb4ee6b10d0b70524ac44443)
     devDependencies:
-      jsonc-parser:
-        specifier: ^3.3.1
-        version: 3.3.1
       puppeteer:
         specifier: ^25.17.0
         version: 25.17.0
@@ -614,9 +611,6 @@ packages:
   get-east-asian-width@1.7.0:
     resolution: {integrity: sha512-XjH1AECxf0giL2V1aU8vKyRR2ppRUb5c0EvT7zuJTokQ74bNo52zOtghqdWIqrhUD79fo3x0WfKZdOqxF6LG1Q==}
     engines: {node: '>=18'}
-
-  jsonc-parser@3.3.1:
-    resolution: {integrity: sha512-HUgH65KyejrUFPvHFPbqOY0rsFip3Bo5wb4ngvdi1EpCYWUQDC5V+Y7mZws+DLkr4M//zQJoanu1SP+87Dv1oQ==}
 
   kleur@4.1.5:
     resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
@@ -1319,8 +1313,6 @@ snapshots:
   get-caller-file@2.0.5: {}
 
   get-east-asian-width@1.7.0: {}
-
-  jsonc-parser@3.3.1: {}
 
   kleur@4.1.5: {}
 

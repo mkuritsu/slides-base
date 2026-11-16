@@ -29,7 +29,7 @@ A starting point for talks: HTML slides with [reveal.js](https://revealjs.com) 5
 | `pnpm pdf:static` | Builds the deck and exports `slides-static.pdf`, one page per slide, with every step shown |
 | `pnpm pdfs` | Builds the deck and exports both PDFs |
 | `pnpm timing` | Lists the timing and the length of the notes of every slide, and checks that the timings add up to the talk |
-| `pnpm build:deployment` | Builds the public deck, without speaker notes, and both PDFs into `dist/deployment/` (`--no-pdf` skips the PDFs) |
+| `pnpm build:deployment` | Exports both PDFs, then builds the public deck, without speaker notes, into `dist/deployment/` with the PDFs next to it |
 | `pnpm run deploy` | `pnpm build:deployment`, then `wrangler deploy` |
 
 The built deck is a set of modules, so browsers refuse to run it from a `file://` URL. Serve `dist/presentation/` with `pnpm present` or any static file server, and it needs no network.
@@ -108,7 +108,7 @@ Speaker notes are only for you. The public build (`pnpm build:deployment`, run b
 - drops every `<aside class="notes">`, every `data-notes` attribute, and every HTML comment from the page (`stripNotes` in `vite.config.js`), and
 - leaves the notes plugin out of the bundle (`src/main.js`), so S does nothing on the public deck.
 
-`scripts/build-deployment.js` then scans everything in `dist/deployment/` and fails before anything is deployed if a notes block or a `data-notes` attribute is left. The PDFs are printed from the normal build, but the print mode of reveal.js leaves the notes out (`showNotes` is off), so they are safe to publish.
+The same plugin then checks every output file, and the build fails before it writes anything if a notes block or a `data-notes` attribute is left. The PDFs are printed from the normal build, but the print mode of reveal.js leaves the notes out (`showNotes` is off), so they are safe to publish.
 
 The normal build (`pnpm build`, `pnpm present`) keeps the notes for the speaker view, in `dist/presentation/`. The Worker only serves `dist/deployment/`, so it never gets them.
 
@@ -133,9 +133,9 @@ Puppeteer downloads its own Chrome on `pnpm install` (`allowBuilds` in `pnpm-wor
 
 ## Deployment
 
-The public deck is served by a Cloudflare Worker that only serves static assets. `wrangler.jsonc` holds its configuration. `pnpm build:deployment` writes the public deck to `dist/deployment/`, the assets folder, with the two PDFs next to it as `slides.pdf` and `slides-static.pdf`. A request to a folder without its trailing slash is redirected to it, so the relative asset URLs of the deck resolve.
+The public deck is served by a Cloudflare Worker that only serves static assets. `wrangler.jsonc` holds its configuration. `pnpm build:deployment` writes the public deck to `dist/deployment/`, the assets folder, with the two PDFs next to it as `slides.pdf` and `slides-static.pdf`. URLs never end in a slash (`html_handling` is `drop-trailing-slash`), so `/index.html` redirects to `/`.
 
-The configuration has no `name`, no routes, and keeps the Wrangler defaults for `workers.dev` and preview URLs, so a deploy is served at `https://<name>.<your-subdomain>.workers.dev/`. To publish on your own domain, add a route or a custom domain in `wrangler.jsonc` or in the Cloudflare dashboard. If you add a route with a path, such as `example.com/talks/my-talk*`, `pnpm build:deployment` writes the deck under that path (`dist/deployment/talks/my-talk/`), since Cloudflare looks assets up by the full path of the request.
+The configuration has no `name`, no routes, and keeps the Wrangler defaults for `workers.dev` and preview URLs, so a deploy is served at `https://<name>.<your-subdomain>.workers.dev/`. To publish on your own domain, add a custom domain or a route for the whole host (such as `talk.example.com/*`) in `wrangler.jsonc` or in the Cloudflare dashboard. Serve the deck from the root of a host, not under a path such as `example.com/talks/my-talk`. Cloudflare looks assets up by the full path of the request, and without a trailing slash the relative asset URLs of the deck would resolve one folder too high.
 
 To deploy:
 
@@ -155,9 +155,8 @@ To deploy:
 | `src/theme.css` | Theme |
 | `patches/` | Speaker view fixes, applied to reveal.js on install |
 | `assets/` | Images and the favicon |
-| `vite.config.js` | Build settings, the slides plugin, and the notes stripping |
+| `vite.config.js` | Build settings, the slides plugin, the notes stripping, and the notes check |
 | `scripts/export-pdf.js` | PDF export |
-| `scripts/build-deployment.js` | Public build and the notes check |
 | `scripts/check-timing.ts` | Timing check |
 | `wrangler.jsonc` | Cloudflare Worker |
 | `AGENTS.md` | Instructions for coding agents that edit the deck |

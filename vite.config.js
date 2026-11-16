@@ -9,8 +9,11 @@ const slidesDir = resolve(import.meta.dirname, "src/slides");
 
 // The public build (`vite build --mode deployment`, run by `pnpm build:deployment`) must not
 // ship the speaker notes. It drops every <aside class="notes">, every
-// data-notes attribute, and every HTML comment of the page, and
-// scripts/build-deployment.js checks the output for leftovers.
+// data-notes attribute, and every HTML comment of the page. The build then
+// fails, before it writes anything, if a notes block or a data-notes
+// attribute is left in any output file.
+const NOTES = /<aside\b[^>]*\bclass="[^"]*\bnotes\b|\bdata-notes=/;
+
 export function stripNotes(html) {
     return html
         .replace(/[ \t]*<aside\b[^>]*\bclass="[^"]*\bnotes\b[^"]*"[^>]*>[\s\S]*?<\/aside>[ \t]*\n?/g, "")
@@ -38,6 +41,29 @@ function slides() {
                     .join("\n\n");
                 const out = html.replace(/^\s*<!-- slides -->$/m, () => body);
                 return strip ? stripNotes(out) : out;
+            },
+        },
+        generateBundle: {
+            // After Vite has added index.html to the output.
+            order: "post",
+            handler(_options, bundle) {
+                if (!strip) return;
+                const leaks = Object.values(bundle)
+                    .filter((file) => {
+                        const text =
+                            file.type === "chunk"
+                                ? file.code
+                                : typeof file.source === "string"
+                                  ? file.source
+                                  : /\.(html|js|css|json|txt|md|svg)$/.test(file.fileName)
+                                    ? new TextDecoder().decode(file.source)
+                                    : "";
+                        return NOTES.test(text);
+                    })
+                    .map((file) => file.fileName);
+                if (leaks.length) {
+                    this.error(`speaker notes left in the public build: ${leaks.join(", ")}`);
+                }
             },
         },
         // Reload the page in the dev server when a slide is added, changed, or removed.

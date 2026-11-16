@@ -9,14 +9,15 @@ A talk built with reveal.js 5.2.1 and Vite, managed with pnpm. Each slide is an 
 ## Commands
 
 ```sh
-pnpm install                   # once, or after package.json changes (CI: --frozen-lockfile)
-pnpm dev                       # dev server with live reload, http://localhost:5173
-pnpm build                     # build to dist/presentation/ (with notes, for presenting)
-pnpm timing                    # check the per-slide timings against the talk length
-pnpm build:deployment --no-pdf # public build to dist/deployment/, fails if any notes are left
-pnpm present                   # build and serve dist/presentation/ for the talk itself
-pnpm pdfs                      # export slides.pdf and slides-static.pdf with puppeteer
-pnpm run deploy                # public build with PDFs, then wrangler deploy
+pnpm install                           # once, or after package.json changes
+pnpm dev                               # dev server with live reload, http://localhost:5173
+pnpm build                             # build to dist/presentation/ (with notes, for presenting)
+pnpm timing                            # check the per-slide timings against the talk length
+pnpm exec vite build --mode deployment # public build only, fails if any notes are left
+pnpm present                           # build and serve dist/presentation/ for the talk itself
+pnpm pdfs                              # export slides.pdf and slides-static.pdf with puppeteer
+pnpm build:deployment                  # both PDFs, then the public build with them in dist/deployment/
+pnpm run deploy                        # pnpm build:deployment, then wrangler deploy
 ```
 
 Never run `pnpm run deploy` or `wrangler deploy` unless the user asks. It publishes the deck.
@@ -25,7 +26,7 @@ Never run `pnpm run deploy` or `wrangler deploy` unless the user asks. It publis
 
 1. `pnpm build` must succeed.
 2. `pnpm timing` must exit 0 whenever you add, remove, or retime slides, or change `talkMinutes`.
-3. `pnpm build:deployment --no-pdf` must succeed whenever you touch notes, `vite.config.js`, or `src/main.js`. It checks that no notes reach the public build.
+3. `pnpm exec vite build --mode deployment` must succeed whenever you touch notes, `vite.config.js`, or `src/main.js`. It checks that no notes reach the public build.
 4. Look at the slides you changed when you can. Serve the deck (`pnpm present`) and take screenshots with Playwright at 1280×720. Use `Reveal.slide(h, 0, 99)` to show a slide with all of its steps. A slide must fit the 1280×720 canvas without overflow.
 
 ## Slide files
@@ -120,9 +121,9 @@ In SVG, set colours with `style="fill: var(--accent-ink)"` or a class. CSS varia
 - `index.html`: page title, description, footer text (`.deck-footer`), and the `<!-- slides -->` placeholder. Keep the placeholder on its own line.
 - `src/main.js`: reveal.js settings, progress bar, slide numbers. The notes plugin is loaded only outside the `deployment` mode. The `pdf-ready` handler adds the footer, slide number, and progress bar to each PDF page, so keep it in step when you change those on screen.
 - `patches/reveal.js@5.2.1.patch`: fixes to the speaker view of the reveal.js notes plugin, applied by pnpm on install (`patchedDependencies` in `pnpm-workspace.yaml`). `src/main.js` loads the plugin source, `reveal.js/plugin/notes/plugin.js`, so the patched page is used. Edit the patch with `pnpm patch` and `pnpm patch-commit`, never by hand, and keep the comments in `pnpm-workspace.yaml`, since pnpm rewrites that file. Do not upgrade reveal.js unless the user asks. If you do, redo the patch for the new version, then open the speaker view (press S) and check each fix.
-- `vite.config.js`: the slides plugin and `stripNotes`, which removes notes from the public build.
-- `scripts/`: PDF export with puppeteer and the print mode of reveal.js (`export-pdf.js`), public build and notes check (`build-deployment.js`), and the timing check (`check-timing.ts`).
-- `wrangler.jsonc`: the Cloudflare Worker. It has no `name` or routes on purpose. Pass `--name` on deploy, or add them only when the user asks.
+- `vite.config.js`: the slides plugin, `stripNotes`, which removes notes from the public build, and the check that fails that build if any are left.
+- `scripts/`: PDF export with puppeteer and the print mode of reveal.js (`export-pdf.js`), and the timing check (`check-timing.ts`).
+- `wrangler.jsonc`: the Cloudflare Worker. It has no `name` or routes on purpose. Pass `--name` on deploy, or add them only when the user asks. URLs drop the trailing slash, so the deck must be served from the root of a host, never under a path.
 - `dist/`, `.wrangler/`, and the PDFs are build outputs and are gitignored. Never edit or commit them.
 
 ## Writing style
