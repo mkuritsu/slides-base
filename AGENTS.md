@@ -4,7 +4,7 @@ Guidance for coding agents working on this slide deck. `README.md` has the full 
 
 ## What this is
 
-A talk built with reveal.js 5.2.1 and [Vite+](https://viteplus.dev) (the `vp` command), which runs the dev server, the build, formatting, linting, and the package manager (pnpm). Vite+ also picks the Node.js version, 26 (the current LTS), from `.node-version`. Each slide is an HTML file in `src/slides/`, and a Vite plugin (`vite.config.js`) joins them into `index.html` at build time. Slides have speaker notes for the reveal.js speaker view, and a per-slide time budget that drives its pacing timer. A separate public build strips the notes and deploys to a Cloudflare Worker.
+A talk built with reveal.js 5.2.1 and [Vite+](https://viteplus.dev) (the `vp` command), which runs the dev server, the build, formatting, linting, and the package manager (pnpm). Vite+ also picks the Node.js version, 26 (the current LTS), from `engines.node` in `package.json`. Each slide is an HTML file in `src/slides/`, and a Vite plugin (`vite.config.js`) joins them into `index.html` at build time. Slides have speaker notes for the reveal.js speaker view, and a per-slide time budget that drives its pacing timer. A separate public build strips the notes and deploys to a Cloudflare Worker.
 
 ## Commands
 
