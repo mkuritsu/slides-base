@@ -24,18 +24,15 @@ A starting point for talks: HTML slides with [reveal.js](https://revealjs.com) 5
 | --- | --- |
 | `pnpm dev` | Dev server with live reload at http://localhost:5173 (`pnpm dev --port 9000` picks the port) |
 | `pnpm build` | Writes the deck to `dist/presentation/` |
-| `pnpm preview` | Serves `dist/presentation/` at http://localhost:4173 |
 | `pnpm present` | Builds the deck and serves it with `vite preview`. Use this for the talk itself (`pnpm present --port 9000` picks the port) |
 | `pnpm pdf` | Builds the deck and exports `slides.pdf`, one page per fragment step, with the click-by-click builds (`pnpm pdf other.pdf` picks the name) |
 | `pnpm pdf:static` | Builds the deck and exports `slides-static.pdf`, one page per slide, with every step shown |
 | `pnpm pdfs` | Builds the deck and exports both PDFs |
 | `pnpm timing` | Lists the timing and the length of the notes of every slide, and checks that the timings add up to the talk |
-| `pnpm new <name>` | Adds a slide after the last counted one (`--after 05` puts it at `05a-`, `--section "Label"` sets its label) |
 | `pnpm build:deployment` | Builds the public deck, without speaker notes, and both PDFs into `dist/deployment/` (`--no-pdf` skips the PDFs) |
-| `pnpm preview:deployment` | Builds the public deck without the PDFs and serves it, to check it before you deploy |
 | `pnpm run deploy` | `pnpm build:deployment`, then `wrangler deploy` |
 
-The built deck is a set of modules, so browsers refuse to run it from a `file://` URL. Serve `dist/presentation/` with `pnpm present`, `pnpm preview`, or any static file server, and it needs no network.
+The built deck is a set of modules, so browsers refuse to run it from a `file://` URL. Serve `dist/presentation/` with `pnpm present` or any static file server, and it needs no network.
 
 ## Presenting on two screens
 
@@ -68,7 +65,7 @@ Mark every click in the notes with `(Click)`, so you know when to press the key.
 
 ## Writing slides
 
-- `src/slides/` holds one file per slide, each a single `<section>` with its speaker notes in an `<aside class="notes">` at the end. The deck shows them in file name order, so the number prefix sets the order. To add a slide between two others, give it a name that sorts between them, such as `05a-name.html` (or run `pnpm new name --after 05`).
+- `src/slides/` holds one file per slide, each a single `<section>` with its speaker notes in an `<aside class="notes">` at the end. The deck shows them in file name order, so the number prefix sets the order. To add a slide between two others, give it a name that sorts between them, such as `05a-name.html`.
 - `data-section="Label"` on a `<section>` shows the small label above the title.
 - `class="title-slide" data-state="is-title"` makes a cover slide, and hides the footer and the slide number on it.
 - Steps are reveal.js fragments: `class="fragment"` appears on a click, `class="fragment emph"` is always shown and highlighted on its click (table rows), and `class="fragment dim-until"` is shown faded until its click.
@@ -160,5 +157,5 @@ To deploy:
 | `scripts/export-pdf.js` | PDF export |
 | `scripts/build-deployment.js` | Public build and the notes check |
 | `scripts/check-timing.ts` | Timing check |
-| `scripts/new-slide.js` | New slide helper |
 | `wrangler.jsonc` | Cloudflare Worker |
+| `AGENTS.md` | Instructions for coding agents that edit the deck |

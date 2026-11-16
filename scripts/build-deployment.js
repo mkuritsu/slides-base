@@ -2,21 +2,19 @@
 // public deck, without speaker notes, and its two PDFs next to it, slides.pdf
 // (one page per step) and slides-static.pdf (one page per slide).
 //
-// Usage: node scripts/build-deployment.js [--no-pdf] [--preview]
+// Usage: node scripts/build-deployment.js [--no-pdf]
 //
 // The deck goes to the root of dist/deployment/. If wrangler.jsonc has a route with
 // a path, it goes under that path instead, since Cloudflare looks assets up by
 // the full path of the request: "example.com/talks/my-talk*" puts it in
 // dist/deployment/talks/my-talk/.
 //
-// --no-pdf skips the PDF export (it needs Chrome). --preview serves dist/deployment/
-// with vite preview afterwards, to check the public build before deploying.
+// --no-pdf skips the PDF export (it needs Chrome).
 
 import { execFileSync } from "node:child_process";
 import { copyFileSync, readdirSync, readFileSync, rmSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parse, printParseErrorCode } from "jsonc-parser";
-import { preview } from "vite";
 
 const root = resolve(import.meta.dirname, "..");
 const args = process.argv.slice(2);
@@ -94,15 +92,3 @@ if (leaks.length) {
 }
 
 console.log(`\nPublic deck (no speaker notes) in ${outDir}/, served at /${path ? `${path}/` : ""}`);
-
-// --------------------------------------------------------------- preview
-
-if (args.includes("--preview")) {
-    const server = await preview({
-        root,
-        build: { outDir: "dist/deployment" },
-        preview: { open: false },
-    });
-    const url = new URL(path ? `${path}/` : "", server.resolvedUrls.local[0]);
-    console.log(`Public deck at ${url}`);
-}
