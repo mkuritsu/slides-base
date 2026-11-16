@@ -180,7 +180,7 @@ To deploy:
 
 ## Platforms
 
-The deck builds, exports, and deploys the same way on Linux, macOS, and Windows. Every script runs through `vp run`, which splits commands on `&&` itself, so nothing depends on a Unix shell.
+The deck builds, exports, and deploys the same way on Linux, macOS, and Windows. Every script runs through `vp run`, which splits commands on `&&` itself, so nothing depends on a Unix shell. `.gitattributes` keeps LF line endings on every platform, so `vp check` agrees on Windows too.
 
 ## License
 
