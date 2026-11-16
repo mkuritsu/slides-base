@@ -1,11 +1,12 @@
 // Export the built deck (dist/presentation/) to PDF.
 //
-// Serves dist/presentation/ with vite preview, opens it in Chrome with puppeteer in the
+// Serves dist/presentation/ with the Vite+ preview server, opens it in Chrome with puppeteer in the
 // print mode of reveal.js (?print-pdf), and prints it to a PDF with one
 // 1280×720 page per slide or per step. Puppeteer downloads its own Chrome on
 // install. Set PUPPETEER_EXECUTABLE_PATH to use another Chrome or Chromium.
 //
-// Usage: node scripts/export-pdf.js [--static | --all] [output.pdf]
+// Usage: vp run pdf [output.pdf], vp run pdf:static, or vp run pdfs, which build
+// dist/presentation/ first and run node scripts/export-pdf.js [--static | --all] [output.pdf].
 //
 // By default every fragment step gets its own page, so the click-by-click
 // build of a slide is kept (slides.pdf). With --static, every fragment is
@@ -15,7 +16,7 @@
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import puppeteer from "puppeteer";
-import { preview } from "vite";
+import { preview } from "vite-plus";
 
 const root = resolve(import.meta.dirname, "..");
 const args = process.argv.slice(2);
@@ -31,13 +32,26 @@ const jobs = args.includes("--all")
       : [{ animated: true, output: named ?? "slides.pdf" }];
 
 if (!existsSync(resolve(root, "dist/presentation/index.html"))) {
-    console.error("dist/presentation/ has no build. Run `pnpm build` first (pnpm pdf does).");
+    console.error("dist/presentation/ has no build. Run `vp build` first (vp run pdf does).");
     process.exit(1);
 }
 
 const server = await preview({ root, preview: { port: 0, strictPort: false, open: false }, logLevel: "warn" });
 const url = server.resolvedUrls.local[0];
-const browser = await puppeteer.launch();
+// Ubuntu 23.10 and later (AppArmor) stop the Chrome that puppeteer downloads
+// from starting its sandbox. The page is this deck, served from localhost, so
+// on Linux the export falls back to running Chrome without the sandbox.
+async function launch() {
+    try {
+        return await puppeteer.launch();
+    } catch (error) {
+        if (process.platform !== "linux" || !/sandbox/i.test(String(error))) throw error;
+        console.warn("Chrome could not start its sandbox, so it runs without it for this export.");
+        return puppeteer.launch({ args: ["--no-sandbox"] });
+    }
+}
+
+const browser = await launch();
 
 async function print({ animated, output }) {
     const page = await browser.newPage();

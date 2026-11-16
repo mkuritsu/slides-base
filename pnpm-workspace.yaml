@@ -1,11 +1,21 @@
 allowBuilds:
-  # puppeteer (the PDF export) downloads its own Chrome on install.
-  puppeteer: true
-  # wrangler (the Cloudflare deploy) needs the native binaries of these two.
-  esbuild: true
-  workerd: true
+    # puppeteer (the PDF export) downloads its own Chrome on install.
+    puppeteer: true
+    # wrangler (the Cloudflare deploy) needs the native binaries of these two.
+    esbuild: true
+    workerd: true
+catalog:
+    vite: npm:@voidzero-dev/vite-plus-core@1.6.0
+    vite-plus: 1.6.0
 # Fixes to the speaker view of the reveal.js notes plugin (see the patch and
 # "Speaker view fixes" in README.md). pnpm install fails if a hunk no longer
 # applies, for example after an upgrade of reveal.js.
 patchedDependencies:
-  reveal.js@5.2.1: patches/reveal.js@5.2.1.patch
+    reveal.js@5.2.1: patches/reveal.js@5.2.1.patch
+overrides:
+    vite@*: "catalog:"
+peerDependencyRules:
+    allowAny:
+        - vite
+    allowedVersions:
+        vite: "*"

@@ -1,11 +1,11 @@
-// Cloudflare Worker that serves the public deck (pnpm run deploy).
+// Cloudflare Worker that serves the public deck (vp run deploy).
 //
-// The Worker only serves static assets, from dist/deployment/, which `pnpm build:deployment`
+// The Worker only serves static assets, from dist/deployment/, which `vp run build:deployment`
 // fills with the public deck and its PDFs. The deck is served from the root of the
 // Worker's host.
 //
 // Wrangler needs a name for the Worker: add "name" here, or pass it with
-// `pnpm run deploy --name my-talk`.
+// `vp run deploy --name my-talk`.
 {
     "$schema": "node_modules/wrangler/config-schema.json",
     "compatibility_date": "2026-11-01",
@@ -13,6 +13,6 @@
         "directory": "./dist/deployment",
         // URLs never end in a slash: /index.html and /page/ redirect to / and
         // /page. The deck is at the root, so its relative asset URLs resolve.
-        "html_handling": "drop-trailing-slash"
-    }
+        "html_handling": "drop-trailing-slash",
+    },
 }

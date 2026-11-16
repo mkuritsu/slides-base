@@ -1,31 +1,34 @@
 {
-  "name": "slides-base",
-  "private": true,
-  "version": "1.0.0",
-  "description": "reveal.js slide deck built with Vite, with speaker notes, pacing, PDF export, and a Cloudflare Worker deploy",
-  "type": "module",
-  "packageManager": "pnpm@10.28.0",
-  "engines": {
-    "node": ">=22.18"
-  },
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "present": "vite build && vite preview --strictPort",
-    "pdf": "vite build && node scripts/export-pdf.js",
-    "pdf:static": "vite build && node scripts/export-pdf.js --static",
-    "pdfs": "vite build && node scripts/export-pdf.js --all",
-    "build:deployment": "pnpm pdfs && vite build --mode deployment && cp slides.pdf slides-static.pdf dist/deployment/",
-    "deploy": "pnpm build:deployment && wrangler deploy",
-    "timing": "node scripts/check-timing.ts"
-  },
-  "dependencies": {
-    "marked": "4.3.0",
-    "reveal.js": "5.2.1"
-  },
-  "devDependencies": {
-    "puppeteer": "^25.17.0",
-    "vite": "^8.3.4",
-    "wrangler": "^4.156.0"
-  }
+    "name": "slides-base",
+    "version": "1.0.0",
+    "private": true,
+    "description": "reveal.js slide deck built with Vite, with speaker notes, pacing, PDF export, and a Cloudflare Worker deploy",
+    "license": "MIT",
+    "type": "module",
+    "scripts": {
+        "dev": "vp dev",
+        "build": "vp build",
+        "present": "vp build && vp preview --strictPort",
+        "pdf": "vp build && node scripts/export-pdf.js",
+        "pdf:static": "vp build && node scripts/export-pdf.js --static",
+        "pdfs": "vp build && node scripts/export-pdf.js --all",
+        "build:deployment": "vp run pdfs && vp build --mode deployment",
+        "deploy": "vp run build:deployment && wrangler deploy",
+        "timing": "node scripts/check-timing.ts"
+    },
+    "dependencies": {
+        "marked": "4.3.0",
+        "reveal.js": "5.2.1"
+    },
+    "devDependencies": {
+        "@types/node": "^26.6.6",
+        "puppeteer": "^25.17.0",
+        "vite": "catalog:",
+        "vite-plus": "catalog:",
+        "wrangler": "^4.156.0"
+    },
+    "engines": {
+        "node": ">=22.18"
+    },
+    "packageManager": "pnpm@10.28.0"
 }

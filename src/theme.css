@@ -29,7 +29,8 @@
     --ok: #1e7f4f;
 
     --font-sans: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", "Nimbus Sans", sans-serif;
-    --font-mono: "JetBrains Mono", "Fira Code", "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace;
+    --font-mono:
+        "JetBrains Mono", "Fira Code", "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace;
 }
 
 html,
@@ -815,7 +816,6 @@ html.reveal-print .reveal .slides .pdf-page > section.title-slide {
     display: none;
 }
 
-
 /* ---------------------------------------------------------------- figures */
 
 /* An image (a chart, a screenshot, an exported figure), scaled to fit the space left. */
@@ -937,7 +937,6 @@ html.reveal-print .reveal .slides .pdf-page > section.title-slide {
     position: relative;
 }
 
-
 /* ---------------------------------------------------------------- sweeps */
 
 /* Charts and timelines that grow from left to right when their slide or step
@@ -961,8 +960,12 @@ html.reveal-print .reveal .slides .pdf-page > section.title-slide {
 }
 
 @keyframes sweep {
-    from { transform: scaleX(0); }
-    to { transform: scaleX(1); }
+    from {
+        transform: scaleX(0);
+    }
+    to {
+        transform: scaleX(1);
+    }
 }
 
 .reveal section.present .after-sweep {
@@ -975,7 +978,9 @@ html.reveal-print .reveal .slides .pdf-page > section.title-slide {
 }
 
 @keyframes fade-in {
-    to { opacity: 1; }
+    to {
+        opacity: 1;
+    }
 }
 
 html.no-animation .reveal .after-sweep,

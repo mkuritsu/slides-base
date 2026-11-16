@@ -4,12 +4,12 @@ import "reveal.js/dist/reveal.css";
 import "./theme.css";
 import config from "./config.js";
 
-// Presenting on two screens: serve the deck (pnpm present), press S to open
+// Presenting on two screens: serve the deck (vp run present), press S to open
 // the speaker view in a new window, move that window to your own screen, and
 // press F in the main window to make it fullscreen on the projector.
 
-// The public build (pnpm build:deployment) has no speaker notes, so it leaves out the
-// notes plugin and the S key does nothing there. Vite replaces
+// The public build (vp run build:deployment) has no speaker notes, so it leaves out the
+// notes plugin and the S key does nothing there. Vite+ replaces
 // import.meta.env.MODE at build time, so the plugin is not even bundled.
 const withNotes = import.meta.env.MODE !== "deployment";
 const plugins = [];
@@ -68,7 +68,7 @@ Reveal.initialize({
     backgroundTransition: "none",
 
     // The speaker view paces the talk with the data-timing of each slide (in
-    // seconds), which should add up to this total (check with pnpm timing).
+    // seconds), which should add up to this total (check with vp run timing).
     totalTime: config.talkMinutes * 60,
 
     pdfSeparateFragments: false,

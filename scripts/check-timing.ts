@@ -5,7 +5,7 @@
 // compares the sum of the timings with the length of the talk. Exits with an
 // error if they differ, so it can run in CI.
 //
-// Usage: node scripts/check-timing.ts
+// Usage: vp run timing
 
 import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";

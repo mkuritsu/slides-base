@@ -1,13 +1,13 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { defineConfig } from "vite";
+import { defineConfig, lazyPlugins } from "vite-plus";
 
 // Each slide lives in its own file in src/slides/, and the deck shows them in
 // file name order. This plugin puts them in place of <!-- slides --> in
 // index.html.
 const slidesDir = resolve(import.meta.dirname, "src/slides");
 
-// The public build (`vite build --mode deployment`, run by `pnpm build:deployment`) must not
+// The public build (`vp build --mode deployment`, run by `vp run build:deployment`) must not
 // ship the speaker notes. It drops every <aside class="notes">, every
 // data-notes attribute, and every HTML comment of the page. The build then
 // fails, before it writes anything, if a notes block or a data-notes
@@ -48,6 +48,13 @@ function slides() {
             order: "post",
             handler(_options, bundle) {
                 if (!strip) return;
+                // The PDFs (vp run pdfs) go next to the public deck, when they exist.
+                for (const name of ["slides.pdf", "slides-static.pdf"]) {
+                    const file = resolve(import.meta.dirname, name);
+                    if (existsSync(file)) {
+                        this.emitFile({ type: "asset", fileName: name, source: readFileSync(file) });
+                    }
+                }
                 const leaks = Object.values(bundle)
                     .filter((file) => {
                         const text =
@@ -79,13 +86,20 @@ function slides() {
 }
 
 export default defineConfig(({ mode }) => ({
-        // Relative asset URLs, so the built deck can be served from any folder.
-        base: "./",
-        build: {
-            // The public build (--mode deployment) and the build with notes go to their own
-            // folders, so the Worker, which serves dist/deployment/, never gets the notes.
-            outDir: mode === "deployment" ? "dist/deployment" : "dist/presentation",
-            emptyOutDir: true,
-        },
-        plugins: [slides()],
+    // vp fmt (oxfmt) and vp lint (oxlint), both run by vp check.
+    fmt: { tabWidth: 4, printWidth: 120, ignorePatterns: ["pnpm-lock.yaml"] },
+    lint: {
+        jsPlugins: [{ name: "vite-plus", specifier: "vite-plus/oxlint-plugin" }],
+        rules: { "vite-plus/prefer-vite-plus-imports": "error" },
+        options: { typeAware: true, typeCheck: true },
+    },
+    // Relative asset URLs, so the built deck can be served from any folder.
+    base: "./",
+    build: {
+        // The public build (--mode deployment) and the build with notes go to their own
+        // folders, so the Worker, which serves dist/deployment/, never gets the notes.
+        outDir: mode === "deployment" ? "dist/deployment" : "dist/presentation",
+        emptyOutDir: true,
+    },
+    plugins: lazyPlugins(() => [slides()]),
 }));
