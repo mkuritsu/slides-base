@@ -1,0 +1,35 @@
+{
+  "name": "slides-base",
+  "private": true,
+  "version": "1.0.0",
+  "description": "reveal.js slide deck built with Vite, with speaker notes, pacing, PDF export, and a Cloudflare Worker deploy",
+  "type": "module",
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "present": "vite build && vite preview --strictPort",
+    "pdf": "vite build && node scripts/export-pdf.js",
+    "pdf:static": "vite build && node scripts/export-pdf.js --static",
+    "pdfs": "vite build && node scripts/export-pdf.js --all",
+    "build:deployment": "node scripts/build-deployment.js",
+    "preview:deployment": "node scripts/build-deployment.js --no-pdf --preview",
+    "deploy": "node scripts/build-deployment.js && wrangler deploy",
+    "timing": "node scripts/check-timing.ts",
+    "new": "node scripts/new-slide.js"
+  },
+  "dependencies": {
+    "marked": "4.3.0",
+    "reveal.js": "5.2.1"
+  },
+  "devDependencies": {
+    "decktape": "3.17.0",
+    "jsonc-parser": "^3.3.1",
+    "vite": "^8.3.4",
+    "wrangler": "^4.156.0"
+  }
+}

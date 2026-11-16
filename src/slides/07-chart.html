@@ -1,0 +1,20 @@
+<section data-timing="90" data-section="Results">
+    <h2>A chart that grows as time passes</h2>
+    <svg class="diagram big grow" viewBox="0 0 1100 380" role="img" aria-label="Two lines over time">
+        <defs><clipPath id="chart-sweep"><rect class="sweep" x="80" y="0" width="980" height="340" /></clipPath></defs>
+        <line class="edge" x1="80" y1="320" x2="1060" y2="320" />
+        <line class="edge" x1="80" y1="20" x2="80" y2="320" />
+        <text class="note" x="80" y="350">0 s</text>
+        <text class="note" x="1060" y="350" text-anchor="end">60 s</text>
+        <g clip-path="url(#chart-sweep)">
+            <polyline class="edge" points="80,300 250,270 420,250 590,220 760,200 930,190 1060,180" />
+            <polyline class="edge accent" points="80,300 250,240 420,170 590,120 760,90 930,70 1060,60" />
+        </g>
+        <text class="lbl after-sweep" x="1050" y="50" text-anchor="end" style="fill: var(--accent-ink)">Ours</text>
+        <text class="lbl after-sweep" x="1050" y="215" text-anchor="end">Baseline</text>
+    </svg>
+    <aside class="notes">
+        <p>The lines are drawn from left to right when the slide is shown. A rect with the sweep class in a clipPath uncovers them, and labels with after-sweep fade in at the end.</p>
+        <p>Going back to the slide, and the PDF export, show the chart whole.</p>
+    </aside>
+</section>

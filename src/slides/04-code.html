@@ -1,0 +1,27 @@
+<section data-timing="75" data-section="Details">
+    <h2>Code, coloured by hand</h2>
+    <div class="row">
+        <div class="col">
+<pre class="code"><code><span class="c">// Tokens are spans with short classes.</span>
+<span class="k">export function</span> <span class="f">greet</span>(name) {
+    <span class="k">return</span> <span class="s">`Hello, ${name}!`</span>;
+}
+
+<span class="f">greet</span>(<span class="s">"world"</span>, <span class="n">42</span>);</code></pre>
+        </div>
+        <div class="col">
+            <ol>
+                <li class="fragment dim-until"><code>.k</code> keywords, <code>.f</code> functions</li>
+                <li class="fragment dim-until"><code>.s</code> strings, <code>.n</code> numbers</li>
+                <li class="fragment dim-until"><code>.c</code> comments</li>
+            </ol>
+            <div class="how-to-read"><span class="label">Note</span>Keep <code>&lt;pre&gt;</code> blocks unindented, since their spaces are shown as is.</div>
+        </div>
+    </div>
+    <aside class="notes">
+        <p>Code blocks use pre with the code class, and spans for colours, so there is no highlighter to configure.</p>
+        <p>(Click) Steps with dim-until are always shown, but faded until reached.</p>
+        <p>(Click) Strings and numbers.</p>
+        <p>(Click) Comments.</p>
+    </aside>
+</section>

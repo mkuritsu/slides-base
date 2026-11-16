@@ -1,0 +1,12 @@
+# puppeteer (pulled in by decktape) would download its own Chrome on install.
+# The PDF export uses the system Chrome instead, so skip that download.
+allowBuilds:
+  puppeteer: false
+  # wrangler (the Cloudflare deploy) needs the native binaries of these two.
+  esbuild: true
+  workerd: true
+# Fixes to the speaker view of the reveal.js notes plugin (see the patch and
+# "Speaker view fixes" in README.md). pnpm install fails if a hunk no longer
+# applies, for example after an upgrade of reveal.js.
+patchedDependencies:
+  reveal.js@5.2.1: patches/reveal.js@5.2.1.patch

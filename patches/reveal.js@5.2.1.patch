@@ -1,0 +1,75 @@
+diff --git a/plugin/notes/plugin.js b/plugin/notes/plugin.js
+index 7577aebc774f296d1d0c102e60c763c4bd422918..c4e6bb03f463af979617f0438b5dac50acfc54ee 100644
+--- a/plugin/notes/plugin.js
++++ b/plugin/notes/plugin.js
+@@ -1,4 +1,4 @@
+-import speakerViewHTML from './speaker-view.html'
++import speakerViewHTML from './speaker-view.html?raw'
+ 
+ import { marked } from 'marked';
+ 
+diff --git a/plugin/notes/speaker-view.html b/plugin/notes/speaker-view.html
+index 2047009927f7d95757eecebf7b6c9ce6b395c7f2..3813a06ba16a71211f5cb4a53193ff8cc3e20e1a 100644
+--- a/plugin/notes/speaker-view.html
++++ b/plugin/notes/speaker-view.html
+@@ -301,6 +301,13 @@
+ 				}
+ 			}
+ 
++			/* A click on a preview would give it the keyboard, and keys pressed
++			   there would move only the preview. */
++			#current-slide iframe,
++			#upcoming-slide iframe {
++				pointer-events: none;
++			}
++
+ 		</style>
+ 	</head>
+ 
+@@ -430,9 +437,8 @@
+ 							// Send a message back to notify that the handshake is complete
+ 							window.opener.postMessage( JSON.stringify({ namespace: 'reveal-notes', type: 'connected'} ), '*' );
+ 						}
+-						else if( supportedEvents.includes( data.eventName ) && currentState !== JSON.stringify( data.state ) ) {
+-							dispatchStateToMainWindow( data.state );
+-						}
++						// The previews only follow the main window. A preview that is
++						// still on an earlier step must not move the main window back.
+ 					}
+ 
+ 				} );
+@@ -514,8 +520,8 @@
+ 
+ 				}
+ 
+-				// Limit to max one state update per X ms
+-				handleStateMessage = debounce( handleStateMessage, 200 );
++				// The previews and the notes follow every step at once, so state
++				// updates are not debounced.
+ 
+ 				/**
+ 				 * Forward keyboard events to the current slide window.
+@@ -532,7 +538,9 @@
+ 							event.preventDefault();
+ 							return false;
+ 						}
+-						currentSlide.contentWindow.postMessage( JSON.stringify({ method: 'triggerKey', args: [ event.keyCode ] }), '*' );
++						// Move the main window directly. Sending the key to the preview
++						// lagged, since the main window followed it at most every 500 ms.
++						window.opener.postMessage( JSON.stringify({ method: 'triggerKey', args: [ event.keyCode ] }), '*' );
+ 					} );
+ 
+ 				}
+@@ -717,8 +725,11 @@
+ 
+ 					}
+ 
++					// A click restarts the timer at 00:00, not at the time planned
++					// for the slides before the current one.
+ 					timeEl.addEventListener( 'click', function() {
+-						_resetTimer();
++						start = new Date();
++						_updateTimer();
+ 						return false;
+ 					} );
+ 

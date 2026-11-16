@@ -1,0 +1,987 @@
+/*
+ * Base theme for the slides.
+ *
+ * Change the look of the whole deck from the tokens in :root. The accent
+ * colour (--accent and its tints) marks titles, bullets, the progress bar,
+ * and the "accent" variants of cards, tags, and diagram boxes, which are
+ * meant to highlight what is new or what the slide is about.
+ *
+ * Add styles for a single talk at the end of the file, or in a new CSS file
+ * imported from src/main.js.
+ */
+
+:root {
+    --accent: #2563eb;
+    --accent-ink: #1d4ed8;
+    --accent-wash: #eff6ff;
+    --accent-line: #bfdbfe;
+    --slate: #45535f;
+    --ink: #17212b;
+    --ink-2: #3c4855;
+    --muted: #6b7682;
+    --rule: #dde2e7;
+    --rule-2: #eef1f4;
+    --old: #8a939e;
+    --old-wash: #f3f5f7;
+    --surface: #ffffff;
+    --danger: #c0392b;
+    --danger-wash: #fbeceb;
+    --ok: #1e7f4f;
+
+    --font-sans: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", "Nimbus Sans", sans-serif;
+    --font-mono: "JetBrains Mono", "Fira Code", "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace;
+}
+
+html,
+body,
+.reveal-viewport {
+    background: var(--surface);
+}
+
+.reveal {
+    font-family: var(--font-sans);
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.35;
+}
+
+.reveal ::selection {
+    background: var(--accent-wash);
+}
+
+/* ---------------------------------------------------------------- layout */
+
+.reveal .slides {
+    text-align: left;
+}
+
+.reveal .slides section {
+    box-sizing: border-box;
+    height: 100%;
+    padding: 64px 72px 44px;
+    flex-direction: column;
+    gap: 22px;
+}
+
+/* Section kicker above each title, taken from data-section. */
+.reveal .slides section[data-section]::before {
+    content: attr(data-section);
+    position: absolute;
+    top: 26px;
+    left: 72px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4 {
+    margin: 0;
+    color: var(--ink);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+}
+
+.reveal h1 {
+    font-size: 54px;
+}
+
+.reveal h2 {
+    font-size: 40px;
+}
+
+.reveal h3 {
+    font-size: 26px;
+}
+
+.reveal h4 {
+    font-size: 21px;
+    color: var(--slate);
+}
+
+.reveal p {
+    margin: 0;
+}
+
+.reveal strong {
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.reveal .lead {
+    font-size: 27px;
+    color: var(--ink-2);
+    max-width: 1050px;
+}
+
+.reveal .muted {
+    color: var(--muted);
+}
+
+.reveal .small {
+    font-size: 19px;
+}
+
+.reveal .tiny {
+    font-size: 15px;
+}
+
+.reveal .accent-text {
+    color: var(--accent-ink);
+}
+
+.reveal .ref {
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.reveal .grow {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.reveal .row {
+    display: flex;
+    gap: 24px;
+}
+
+.reveal .col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.reveal .center-v {
+    align-items: center;
+}
+
+/* Centres a block vertically in the space left on the slide. */
+.reveal .middle {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.reveal .stack {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.reveal .bottom-note {
+    margin-top: auto;
+    font-size: 19px;
+    color: var(--ink-2);
+    padding-top: 14px;
+    border-top: 1px solid var(--rule);
+}
+
+/* ---------------------------------------------------------------- lists */
+
+.reveal ul,
+.reveal ol {
+    display: block;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.reveal ul > li,
+.reveal ol > li {
+    position: relative;
+    padding-left: 26px;
+    margin: 0 0 12px;
+}
+
+.reveal ul > li::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 0.52em;
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+    background: var(--accent);
+}
+
+.reveal ol {
+    counter-reset: item;
+}
+
+.reveal ol > li {
+    counter-increment: item;
+    padding-left: 38px;
+}
+
+.reveal ol > li::before {
+    content: counter(item);
+    position: absolute;
+    left: 0;
+    top: 0.12em;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 26px;
+    text-align: center;
+}
+
+.reveal li > .sub {
+    display: block;
+    font-size: 20px;
+    color: var(--muted);
+    margin-top: 2px;
+}
+
+/* ---------------------------------------------------------------- cards */
+
+.reveal .card {
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 18px 20px;
+    background: var(--surface);
+}
+
+.reveal .card h3 {
+    margin-bottom: 8px;
+}
+
+.reveal .card p,
+.reveal .card li {
+    font-size: 20px;
+    color: var(--ink-2);
+}
+
+.reveal .card.big-card {
+    padding: 26px 26px 28px;
+}
+
+.reveal .card.big-card p {
+    font-size: 23px;
+}
+
+.reveal .card .icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 6px;
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.reveal .card .icon circle {
+    fill: var(--surface);
+}
+
+.reveal .card.accent {
+    border-color: var(--accent-line);
+    background: var(--accent-wash);
+}
+
+.reveal .card.old {
+    background: var(--old-wash);
+}
+
+.reveal .card.warn {
+    border-color: #efc4bf;
+    background: var(--danger-wash);
+}
+
+.reveal .tag {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--rule-2);
+    color: var(--slate);
+    vertical-align: middle;
+}
+
+.reveal .tag.accent {
+    background: var(--accent-wash);
+    color: var(--accent-ink);
+    border: 1px solid var(--accent-line);
+}
+
+.reveal .kbd,
+.reveal code {
+    font-family: var(--font-mono);
+    font-size: 0.86em;
+    background: var(--rule-2);
+    border-radius: 4px;
+    padding: 1px 6px;
+    color: var(--ink);
+}
+
+/* Inline code never breaks across lines, for example at "--flag". */
+.reveal :not(pre) > code {
+    white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------- title slide */
+
+.reveal .slides section.title-slide {
+    justify-content: center;
+    padding-left: 96px;
+    padding-right: 96px;
+    gap: 0;
+}
+
+.title-slide .logo {
+    position: absolute;
+    top: 44px;
+    left: 80px;
+    height: 74px;
+    margin: 0;
+}
+
+.title-slide .rule {
+    width: 88px;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--accent);
+    margin-bottom: 30px;
+}
+
+.title-slide h1 {
+    max-width: 1000px;
+}
+
+.title-slide .author {
+    margin-top: 40px;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.title-slide .meta {
+    margin-top: 10px;
+    font-size: 22px;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+/* ---------------------------------------------------------------- stat tiles */
+
+.reveal .stats {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 18px;
+}
+
+.reveal .stat {
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 16px 20px 18px;
+}
+
+.reveal .stat .label {
+    font-size: 18px;
+    color: var(--muted);
+}
+
+.reveal .stat .value {
+    font-size: 54px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-top: 4px;
+}
+
+.reveal .stat .value .unit {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--ink-2);
+    margin-left: 2px;
+}
+
+.reveal .stat .note {
+    font-size: 17px;
+    color: var(--ink-2);
+    margin-top: 6px;
+}
+
+.reveal .big-stats .stat {
+    padding: 22px 24px 24px;
+}
+
+.reveal .big-stats .stat .value {
+    font-size: 76px;
+}
+
+.reveal .big-stats .stat .note {
+    font-size: 19px;
+}
+
+.reveal .meter {
+    position: relative;
+    height: 8px;
+    border-radius: 4px;
+    background: var(--rule-2);
+    margin-top: 12px;
+    overflow: hidden;
+}
+
+.reveal .meter > span {
+    position: absolute;
+    inset: 0 auto 0 0;
+    border-radius: 4px;
+    background: var(--old);
+}
+
+/* ---------------------------------------------------------------- flow boxes */
+
+.reveal .flow {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+}
+
+.reveal .flow > .step {
+    flex: 1 1 0;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 14px 16px;
+    background: var(--surface);
+}
+
+.reveal .flow > .step h3 {
+    font-size: 23px;
+}
+
+.reveal .flow > .step p {
+    font-size: 17px;
+    color: var(--ink-2);
+    margin-top: 6px;
+}
+
+.reveal .flow > .step .where {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+}
+
+.reveal .flow > .arrow {
+    flex: 0 0 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--old);
+    font-size: 26px;
+}
+
+.reveal .flow > .step.focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent) inset;
+    background: var(--accent-wash);
+}
+
+/* ---------------------------------------------------------------- tables */
+
+.reveal table.data {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 19px;
+}
+
+.reveal table.data th,
+.reveal table.data td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--rule);
+    text-align: left;
+    vertical-align: top;
+}
+
+.reveal table.data thead th {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 2px solid var(--ink);
+    vertical-align: bottom;
+}
+
+.reveal table.data td.num,
+.reveal table.data th.num {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.reveal table.data td.num {
+    font-variant-numeric: tabular-nums;
+}
+
+.reveal table.data tr.hl td,
+.reveal table.data tr.fragment.emph.visible td {
+    background: var(--accent-wash);
+}
+
+.reveal table.data tr.hl td {
+    font-weight: 700;
+}
+
+.reveal table.data .pill {
+    display: inline-block;
+    min-width: 44px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--rule-2);
+    color: var(--slate);
+}
+
+.reveal .good {
+    color: var(--ok);
+    font-weight: 700;
+}
+
+.reveal .bad {
+    color: var(--danger);
+    font-weight: 700;
+}
+
+/* ---------------------------------------------------------------- code */
+
+.reveal pre.code {
+    position: relative;
+    margin: 0;
+    padding: 16px 20px;
+    border-radius: 10px;
+    background: #f6f8fa;
+    border: 1px solid var(--rule);
+    font-family: var(--font-mono);
+    font-size: 19px;
+    line-height: 28px;
+    color: var(--ink);
+    white-space: pre;
+    box-shadow: none;
+    width: auto;
+    overflow: hidden;
+}
+
+.reveal pre.code.small-code {
+    font-size: 16px;
+    line-height: 23px;
+    padding: 12px 16px;
+}
+
+.reveal pre.code code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+    max-height: none;
+    overflow: visible;
+}
+
+.code .k {
+    color: #a3216b;
+}
+
+.code .s {
+    color: #0b6b3a;
+}
+
+.code .c {
+    color: #7a8590;
+}
+
+.code .f {
+    color: #075a92;
+}
+
+.code .n {
+    color: #8a4b00;
+}
+
+.code .y {
+    color: #075a92;
+}
+
+/* ---------------------------------------------------------------- diagrams */
+
+.reveal svg.diagram {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+.diagram text {
+    font-family: var(--font-sans);
+    fill: var(--ink);
+}
+
+.diagram .box {
+    fill: var(--surface);
+    stroke: #b9c1c9;
+    stroke-width: 1.5;
+}
+
+.diagram .box.old {
+    fill: var(--old-wash);
+}
+
+.diagram .box.accent {
+    fill: var(--accent-wash);
+    stroke: var(--accent);
+    stroke-width: 2.5;
+}
+
+.diagram .lbl {
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.diagram .sub {
+    font-size: 15px;
+    fill: var(--ink-2);
+}
+
+.diagram .note {
+    font-size: 14px;
+    fill: var(--muted);
+}
+
+.diagram .edge {
+    fill: none;
+    stroke: #7d8893;
+    stroke-width: 2;
+}
+
+.diagram .edge.accent {
+    stroke: var(--accent);
+    stroke-width: 2.5;
+}
+
+.diagram .marker {
+    stroke: var(--ink);
+    stroke-width: 1.5;
+}
+
+.diagram .event-line {
+    stroke: var(--ink-2);
+    stroke-width: 1.5;
+}
+
+.diagram .danger-line {
+    stroke: var(--danger);
+    stroke-width: 2;
+}
+
+.diagram .danger-text {
+    fill: var(--danger);
+    font-weight: 700;
+}
+
+/* Larger text for diagrams that have room for it. */
+.diagram.big .lbl {
+    font-size: 21px;
+}
+
+.diagram.big .sub {
+    font-size: 18px;
+}
+
+.diagram.big .note {
+    font-size: 16px;
+}
+
+.diagram .divider-line {
+    stroke: #aeb6be;
+    stroke-width: 1.5;
+    stroke-dasharray: 8 6;
+}
+
+/* ---------------------------------------------------------------- fragments */
+
+/* A step that is always visible but gets emphasis once reached. */
+.reveal .slides section .fragment.emph {
+    opacity: 1;
+    visibility: inherit;
+}
+
+.reveal .slides section .fragment.dim-until {
+    opacity: 0.28;
+    visibility: inherit;
+}
+
+.reveal .slides section .fragment.dim-until.visible {
+    opacity: 1;
+}
+
+/* ---------------------------------------------------------------- chrome */
+
+/* The built-in bar is replaced by .deck-progress (see src/main.js). reveal.js
+   sets its display inline, hence !important. */
+.reveal .progress {
+    display: none !important;
+}
+
+.reveal .deck-progress {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 10;
+    width: 100%;
+    height: 4px;
+}
+
+.reveal .deck-progress span {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    transform-origin: left center;
+    /* Same easing as the reveal.js bar. */
+    transition: transform 0.8s cubic-bezier(0.26, 0.86, 0.44, 0.985);
+}
+
+.reveal .slide-number {
+    right: 22px;
+    bottom: 14px;
+    left: auto;
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-variant-numeric: tabular-nums;
+}
+
+.reveal .slide-number a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.deck-footer {
+    position: fixed;
+    left: 22px;
+    bottom: 14px;
+    z-index: 30;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--muted);
+    pointer-events: none;
+}
+
+/* reveal.js sets the slide number's display inline, hence !important. */
+html.reveal-print .deck-footer,
+html.speaker-preview .deck-footer,
+.is-title .deck-footer,
+.is-title .slide-number {
+    display: none !important;
+}
+
+/* PDF export (?print-pdf): reveal.js resets the slide layout with
+   !important, so restore the full-height flex layout of each slide. */
+html.reveal-print .reveal .slides .pdf-page > section {
+    display: flex !important;
+    height: 720px !important;
+    padding: 64px 72px 44px !important;
+}
+
+html.reveal-print .reveal .slides .pdf-page > section.title-slide {
+    padding-left: 96px !important;
+    padding-right: 96px !important;
+}
+
+/* Speaker notes are only for the speaker view. */
+.reveal aside.notes {
+    display: none;
+}
+
+
+/* ---------------------------------------------------------------- figures */
+
+/* An image (a chart, a screenshot, an exported figure), scaled to fit the space left. */
+.reveal img.figure {
+    display: block;
+    max-width: 100%;
+    min-height: 0;
+    margin: 0 auto;
+    object-fit: contain;
+}
+
+/* ---------------------------------------------------------------- callouts */
+
+/* Box that explains how to read a chart or a table. */
+.reveal .how-to-read {
+    font-size: 18px;
+    line-height: 1.4;
+    color: var(--ink-2);
+    padding: 9px 14px;
+    background: var(--old-wash);
+    border-left: 4px solid var(--old);
+    border-radius: 0 8px 8px 0;
+}
+
+.reveal .how-to-read .label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-right: 8px;
+}
+
+/* The takeaway of a slide, at its bottom, optionally led by a .badge. */
+.reveal .takeaway {
+    margin-top: auto;
+    font-size: 21px;
+    color: var(--ink);
+    padding-top: 12px;
+    border-top: 1px solid var(--rule);
+}
+
+.reveal .takeaway .badge + * {
+    margin-left: 0;
+}
+
+.reveal .takeaway .badge:not(:first-child) {
+    margin-left: 14px;
+}
+
+.reveal .badge {
+    display: inline-block;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 3px 9px;
+    border-radius: 6px;
+    background: var(--accent);
+    color: #fff;
+    vertical-align: 2px;
+    margin-right: 6px;
+}
+
+/* Balloon: a box with an arrow that points at what it explains. */
+.reveal .balloon {
+    position: absolute;
+    z-index: 2;
+    box-sizing: border-box;
+    padding: 10px 16px;
+    border: 2px solid var(--accent);
+    border-radius: 10px;
+    background: var(--accent-wash);
+    font-size: 19px;
+    line-height: 1.35;
+    color: var(--ink);
+    box-shadow: 0 2px 8px rgba(23, 33, 43, 0.08);
+}
+
+.reveal .balloon.static {
+    position: relative;
+}
+
+.reveal .balloon.danger {
+    border-color: var(--danger);
+    background: var(--danger-wash);
+}
+
+.reveal .balloon::before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: 11px solid transparent;
+}
+
+.reveal .balloon.left-arrow::before {
+    left: -24px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-right: 13px solid var(--accent);
+}
+
+.reveal .balloon.up-arrow::before {
+    top: -24px;
+    left: 40px;
+    border-bottom: 13px solid var(--accent);
+}
+
+.reveal .balloon.up-arrow.right-tip::before {
+    left: auto;
+    right: 120px;
+}
+
+.reveal .balloon.danger.left-arrow::before {
+    border-right-color: var(--danger);
+}
+
+.reveal .table-wrap {
+    position: relative;
+}
+
+
+/* ---------------------------------------------------------------- sweeps */
+
+/* Charts and timelines that grow from left to right when their slide or step
+   is shown. Put a <rect class="sweep"> in a clipPath over the drawing, and
+   give late labels the class "after-sweep" so they fade in at the end. The
+   PDF export (?export), going back, and printing show them whole. See
+   src/slides/07-chart.html. */
+.reveal .sweep {
+    transform-box: fill-box;
+    transform-origin: left center;
+    transform: scaleX(0);
+}
+
+.reveal section.present .sweep {
+    animation: sweep 0.6s cubic-bezier(0.33, 0, 0.2, 1) 0.1s forwards;
+}
+
+/* A drawing inside a step grows only once the step is shown. */
+.reveal section.present .fragment:not(.visible) .sweep {
+    animation: none;
+}
+
+@keyframes sweep {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+}
+
+.reveal section.present .after-sweep {
+    opacity: 0;
+    animation: fade-in 0.25s ease 0.55s forwards;
+}
+
+.reveal section.present .fragment:not(.visible) .after-sweep {
+    animation: none;
+}
+
+@keyframes fade-in {
+    to { opacity: 1; }
+}
+
+html.no-animation .reveal .after-sweep,
+html.nav-back .reveal .after-sweep,
+html.reveal-print .reveal .after-sweep {
+    animation: none !important;
+    opacity: 1;
+}
+
+html.no-animation .reveal .sweep,
+html.nav-back .reveal .sweep,
+html.reveal-print .reveal .sweep {
+    animation: none !important;
+    transform: none;
+}
