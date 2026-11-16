@@ -5,7 +5,7 @@ A starting point for talks: HTML slides with [reveal.js](https://revealjs.com) 5
 ## Starting a new talk
 
 1. Copy this repo, either with **Use this template** on GitHub (turn on Template repository in the repo settings first) or with `git clone` and a new remote.
-2. Install [Vite+](https://viteplus.dev) once, which gives you the `vp` command. It also manages Node.js and pnpm for you, so you need nothing else.
+2. Install [Vite+](https://viteplus.dev) once, which gives you the `vp` command. It also manages Node.js and pnpm for you: it runs the deck on Node.js 26, the current LTS (`.node-version`), and the pnpm version in `package.json`, so you need nothing else.
 
     ```sh
     # macOS and Linux
