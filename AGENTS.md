@@ -15,7 +15,7 @@ pnpm build                     # build to dist/presentation/ (with notes, for pr
 pnpm timing                    # check the per-slide timings against the talk length
 pnpm build:deployment --no-pdf # public build to dist/deployment/, fails if any notes are left
 pnpm present                   # build and serve dist/presentation/ for the talk itself
-pnpm pdfs                      # export slides.pdf and slides-static.pdf (needs Chrome)
+pnpm pdfs                      # export slides.pdf and slides-static.pdf with puppeteer
 pnpm run deploy                # public build with PDFs, then wrangler deploy
 ```
 
@@ -118,10 +118,10 @@ In SVG, set colours with `style="fill: var(--accent-ink)"` or a class. CSS varia
 ## Other files
 
 - `index.html`: page title, description, footer text (`.deck-footer`), and the `<!-- slides -->` placeholder. Keep the placeholder on its own line.
-- `src/main.js`: reveal.js settings, progress bar, slide numbers. The notes plugin is loaded only outside the `deployment` mode.
+- `src/main.js`: reveal.js settings, progress bar, slide numbers. The notes plugin is loaded only outside the `deployment` mode. The `pdf-ready` handler adds the footer, slide number, and progress bar to each PDF page, so keep it in step when you change those on screen.
 - `patches/reveal.js@5.2.1.patch`: fixes to the speaker view of the reveal.js notes plugin, applied by pnpm on install (`patchedDependencies` in `pnpm-workspace.yaml`). `src/main.js` loads the plugin source, `reveal.js/plugin/notes/plugin.js`, so the patched page is used. Edit the patch with `pnpm patch` and `pnpm patch-commit`, never by hand, and keep the comments in `pnpm-workspace.yaml`, since pnpm rewrites that file. Do not upgrade reveal.js unless the user asks. If you do, redo the patch for the new version, then open the speaker view (press S) and check each fix.
 - `vite.config.js`: the slides plugin and `stripNotes`, which removes notes from the public build.
-- `scripts/`: PDF export (`export-pdf.js`), public build and notes check (`build-deployment.js`), and the timing check (`check-timing.ts`).
+- `scripts/`: PDF export with puppeteer and the print mode of reveal.js (`export-pdf.js`), public build and notes check (`build-deployment.js`), and the timing check (`check-timing.ts`).
 - `wrangler.jsonc`: the Cloudflare Worker. It has no `name` or routes on purpose. Pass `--name` on deploy, or add them only when the user asks.
 - `dist/`, `.wrangler/`, and the PDFs are build outputs and are gitignored. Never edit or commit them.
 

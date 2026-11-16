@@ -9,7 +9,7 @@
 // the full path of the request: "example.com/talks/my-talk*" puts it in
 // dist/deployment/talks/my-talk/.
 //
-// --no-pdf skips the PDF export (it needs Chrome).
+// --no-pdf skips the PDF export.
 
 import { execFileSync } from "node:child_process";
 import { copyFileSync, readdirSync, readFileSync, rmSync, statSync } from "node:fs";
@@ -53,8 +53,8 @@ const outDir = join("dist/deployment", path);
 // --------------------------------------------------------------- build
 
 if (withPdf) {
-    // The PDFs are printed from the normal build (dist/presentation/). DeckTape never
-    // prints speaker notes, so the PDFs are safe to publish.
+    // The PDFs are printed from the normal build (dist/presentation/). The print mode of
+    // reveal.js leaves the speaker notes out, so the PDFs are safe to publish.
     run("pnpm", ["pdfs"]);
 }
 

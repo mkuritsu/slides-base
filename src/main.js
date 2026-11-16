@@ -102,6 +102,48 @@ Reveal.on("slidechanged", (event) => {
 Reveal.on("ready", updateProgress);
 Reveal.on("slidechanged", updateProgress);
 
-// The PDF export (scripts/export-pdf.js) drives the deck through decktape,
-// which looks for reveal.js as a global.
+// In the print mode (?print-pdf, used by scripts/export-pdf.js), reveal.js
+// lays every slide or step out as its own page, copying a slide once per step.
+// Each page gets the footer, slide number, and progress bar that it has on
+// screen, except title slides, which show none of them. reveal.js can no
+// longer count the slides once they are moved into pages, so they are
+// numbered here first, and the copies keep the number.
+const deckSlides = [...document.querySelectorAll(".reveal .slides > section")];
+deckSlides.forEach((slide, i) => {
+    slide.dataset.deckIndex = String(i);
+});
+
+Reveal.on("pdf-ready", () => {
+    const footer = document.querySelector(".deck-footer");
+    const counted = deckSlides.filter((slide) => slide.dataset.visibility !== "uncounted");
+    const total = counted.length;
+    for (const page of document.querySelectorAll(".pdf-page")) {
+        page.querySelector(".slide-number-pdf")?.remove();
+        const slide = page.querySelector("section");
+        if (!slide || (slide.dataset.state || "").split(" ").includes("is-title")) continue;
+
+        if (footer) {
+            page.appendChild(footer.cloneNode(true)).classList.add("pdf");
+        }
+
+        const index = Number(slide.dataset.deckIndex);
+        const past = counted.indexOf(deckSlides[index]);
+        const number = page.appendChild(document.createElement("div"));
+        number.className = "slide-number";
+        // Same format as slideNumber above: "current/total", or the position in
+        // the deck with no total for an uncounted (backup) slide.
+        number.innerHTML =
+            past >= 0
+                ? `<span class="slide-number-a">${past + 1}</span><span class="slide-number-delimiter">/</span><span class="slide-number-b">${total}</span>`
+                : `<span class="slide-number-a">${index + 1}</span>`;
+
+        const bar = page.appendChild(document.createElement("div"));
+        bar.className = "deck-progress";
+        const fill = past >= 0 && total > 1 ? Math.min(past / (total - 1), 1) : 1;
+        bar.appendChild(document.createElement("span")).style.transform = `scaleX(${fill})`;
+    }
+});
+
+// reveal.js as a global, so browser tools (Playwright, the console) can drive
+// the deck, for example with Reveal.slide(h, 0, 99) to show every step.
 window.Reveal = Reveal;

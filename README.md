@@ -108,7 +108,7 @@ Speaker notes are only for you. The public build (`pnpm build:deployment`, run b
 - drops every `<aside class="notes">`, every `data-notes` attribute, and every HTML comment from the page (`stripNotes` in `vite.config.js`), and
 - leaves the notes plugin out of the bundle (`src/main.js`), so S does nothing on the public deck.
 
-`scripts/build-deployment.js` then scans everything in `dist/deployment/` and fails before anything is deployed if a notes block or a `data-notes` attribute is left. The PDFs are printed from the normal build, but DeckTape never prints notes, so they are safe to publish.
+`scripts/build-deployment.js` then scans everything in `dist/deployment/` and fails before anything is deployed if a notes block or a `data-notes` attribute is left. The PDFs are printed from the normal build, but the print mode of reveal.js leaves the notes out (`showNotes` is off), so they are safe to publish.
 
 The normal build (`pnpm build`, `pnpm present`) keeps the notes for the speaker view, in `dist/presentation/`. The Worker only serves `dist/deployment/`, so it never gets them.
 
@@ -125,9 +125,11 @@ The patch is for reveal.js 5.2.1 only. To move reveal.js to a new version, run `
 
 ## PDF export
 
-`pnpm pdf` builds the deck, serves `dist/presentation/` on a free port, and prints every fragment step to `slides.pdf` with [DeckTape](https://github.com/astefanutti/decktape), backup slides included. `pnpm pdf:static` prints one page per slide to `slides-static.pdf`, and `pnpm pdfs` does both. The script is `scripts/export-pdf.js`.
+`pnpm pdf` builds the deck, serves `dist/presentation/` on a free port, opens it with [Puppeteer](https://pptr.dev) in the print mode of reveal.js (`?print-pdf`), and prints every fragment step as its own 1280×720 page to `slides.pdf`, backup slides included. `pnpm pdf:static` prints one page per slide, with every step shown, to `slides-static.pdf`, and `pnpm pdfs` does both. The pages are vector PDF, with selectable text. The script is `scripts/export-pdf.js`.
 
-DeckTape drives the Chrome or Chromium installed on the system, so the install skips the browser that puppeteer would otherwise download (`allowBuilds` in `pnpm-workspace.yaml`). Set `CHROME_PATH` if the browser is not on the `PATH` under a usual name (the usual macOS install paths are also tried).
+Each page gets the footer, the slide number, and the progress bar it has on screen, drawn by the `pdf-ready` handler in `src/main.js`. Animated drawings are shown whole.
+
+Puppeteer downloads its own Chrome on `pnpm install` (`allowBuilds` in `pnpm-workspace.yaml` lets it run that step). Set `PUPPETEER_EXECUTABLE_PATH` to use a Chrome or Chromium already on the system instead, and `PUPPETEER_SKIP_DOWNLOAD=1` on install to skip the download.
 
 ## Deployment
 

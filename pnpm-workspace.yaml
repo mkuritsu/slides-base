@@ -1,7 +1,6 @@
-# puppeteer (pulled in by decktape) would download its own Chrome on install.
-# The PDF export uses the system Chrome instead, so skip that download.
 allowBuilds:
-  puppeteer: false
+  # puppeteer (the PDF export) downloads its own Chrome on install.
+  puppeteer: true
   # wrangler (the Cloudflare deploy) needs the native binaries of these two.
   esbuild: true
   workerd: true

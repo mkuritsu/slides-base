@@ -784,11 +784,17 @@ body,
 }
 
 /* reveal.js sets the slide number's display inline, hence !important. */
-html.reveal-print .deck-footer,
+html.reveal-print .deck-footer:not(.pdf),
 html.speaker-preview .deck-footer,
-.is-title .deck-footer,
-.is-title .slide-number {
+.is-title .deck-footer:not(.pdf),
+.is-title .reveal > .slide-number {
     display: none !important;
+}
+
+/* In the PDF, each page gets its own footer, slide number, and progress bar
+   (see the pdf-ready handler in src/main.js). */
+.reveal .pdf-page .deck-footer {
+    position: absolute;
 }
 
 /* PDF export (?print-pdf): reveal.js resets the slide layout with
