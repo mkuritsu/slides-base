@@ -1,27 +1,18 @@
 // Cloudflare Worker that serves the public deck (pnpm run deploy).
 //
-// The Worker only serves static assets. Cloudflare looks assets up by the full
-// path of the request, so `pnpm build:deployment` writes the deck under the path of
-// the first route below (dist/deployment/talks/my-talk/ here), and dist/deployment/ is the
-// assets folder. Change `name` and the route for each talk.
+// The Worker only serves static assets, from dist/deployment/, which `pnpm build:deployment`
+// fills with the public deck and its PDFs. With no routes here, the deck is at the
+// root of dist/deployment/ and of the Worker's URL.
+//
+// Wrangler needs a name for the Worker: add "name" here, or pass it with
+// `pnpm run deploy --name my-talk`.
 {
     "$schema": "node_modules/wrangler/config-schema.json",
-    "name": "my-talk-slides",
     "compatibility_date": "2026-11-01",
     "assets": {
         "directory": "./dist/deployment",
-        // /talks/my-talk redirects to /talks/my-talk/, so the relative asset
-        // URLs of the deck resolve.
+        // A request to a folder without its trailing slash is redirected to
+        // it, so the relative asset URLs of the deck resolve.
         "html_handling": "auto-trailing-slash"
-    },
-    "routes": [
-        {
-            "pattern": "example.com/talks/my-talk*",
-            "zone_name": "example.com"
-        }
-        // Or serve the deck at the root of its own domain:
-        // { "pattern": "talk.example.com", "custom_domain": true }
-    ],
-    "workers_dev": false,
-    "preview_urls": false
+    }
 }

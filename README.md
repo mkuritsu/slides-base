@@ -14,7 +14,7 @@ A starting point for talks: HTML slides with [reveal.js](https://revealjs.com) 5
 3. Set the talk up:
    - `index.html`: the page `<title>`, the description, and the footer text (`.deck-footer`).
    - `src/config.js`: the length of the talk (`talkMinutes`) and the reading pace of your notes.
-   - `wrangler.jsonc`: the Worker `name` and the route where the deck is published.
+   - `wrangler.jsonc`: the Cloudflare Worker that serves the public deck (add a `name`, or pass `--name` on deploy).
    - `src/slides/`: replace the example slides with your own.
    - `src/theme.css`: the colours and fonts, from the tokens in `:root`.
 
@@ -134,13 +134,14 @@ DeckTape drives the Chrome or Chromium installed on the system, so the install s
 
 ## Deployment
 
-The public deck is served by a Cloudflare Worker that only serves static assets. `wrangler.jsonc` holds its configuration: the Worker `name` and the route. Cloudflare looks assets up by the full path of the request, so `pnpm build:deployment` writes the deck under the path of the first route. A route of `example.com/talks/my-talk*` puts it in `dist/deployment/talks/my-talk/`, and `dist/deployment/` is the assets folder. A route without a path, or a custom domain, puts it at the root of `dist/deployment/`. The two PDFs are copied next to the deck, as `slides.pdf` and `slides-static.pdf`. A request to the path without the trailing slash is redirected to it, so the relative asset URLs of the deck resolve.
+The public deck is served by a Cloudflare Worker that only serves static assets. `wrangler.jsonc` holds its configuration. `pnpm build:deployment` writes the public deck to `dist/deployment/`, the assets folder, with the two PDFs next to it as `slides.pdf` and `slides-static.pdf`. A request to a folder without its trailing slash is redirected to it, so the relative asset URLs of the deck resolve.
+
+The configuration has no `name`, no routes, and keeps the Wrangler defaults for `workers.dev` and preview URLs, so a deploy is served at `https://<name>.<your-subdomain>.workers.dev/`. To publish on your own domain, add a route or a custom domain in `wrangler.jsonc` or in the Cloudflare dashboard. If you add a route with a path, such as `example.com/talks/my-talk*`, `pnpm build:deployment` writes the deck under that path (`dist/deployment/talks/my-talk/`), since Cloudflare looks assets up by the full path of the request.
 
 To deploy:
 
-1. Set `name` and the route (`pattern` and `zone_name`) in `wrangler.jsonc`. The zone must be a domain on your Cloudflare account.
-2. Log wrangler in once: `pnpm exec wrangler login`.
-3. Run `pnpm run deploy`.
+1. Log wrangler in once: `pnpm exec wrangler login`.
+2. Run `pnpm run deploy --name my-talk`, or add `"name": "my-talk"` to `wrangler.jsonc` and run `pnpm run deploy`.
 
 `pnpm exec wrangler deploy --dry-run` checks the configuration without deploying. Wrangler is a dev dependency, and `pnpm-workspace.yaml` allows the build scripts of `esbuild` and `workerd` that it needs.
 

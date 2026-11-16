@@ -4,11 +4,10 @@
 //
 // Usage: node scripts/build-deployment.js [--no-pdf] [--preview]
 //
-// The deck goes to the path of the first route in wrangler.jsonc, since
-// Cloudflare looks assets up by the full path of the request. A route of
-// "example.com/talks/my-talk*" puts it in dist/deployment/talks/my-talk/. A route
-// with no path ("talk.example.com/*" or a custom domain) puts it at the root
-// of dist/deployment/.
+// The deck goes to the root of dist/deployment/. If wrangler.jsonc has a route with
+// a path, it goes under that path instead, since Cloudflare looks assets up by
+// the full path of the request: "example.com/talks/my-talk*" puts it in
+// dist/deployment/talks/my-talk/.
 //
 // --no-pdf skips the PDF export (it needs Chrome). --preview serves dist/deployment/
 // with vite preview afterwards, to check the public build before deploying.
